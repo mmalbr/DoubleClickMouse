@@ -1,18 +1,68 @@
 <html>
 <head>
-  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6944068380993727"
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6944068380993727"
      crossorigin="anonymous"></script>
-  
-<link rel="stylesheet" type="text/css" href="style.css" media="screen" />
+	<style>
+		textarea {
+			width:500px;
+			height:400px;
+		}
+		.click {
+			width:100%;
+			height:200px;
+			background:green;
+			text-align:center;
+			color:#fff;
+			cursor:pointer;
+			font-size:20px;
+		}
+	</style>
 </head>
 <body onmousedown="mouseClick();" oncontextmenu="return false;">
-  <div id="click" class="click"></div>
-  Cliques:  <input id="count" type="text" value="0" size="4"> <button id="reset">Reiniciar</button><br /><br />
-  Contador de "Double Click":  <input id="dcCount" type="text" value="0" size="4"> <br /><br />
-  Intervalos entre cliques abaixo de 0,08 milisegundos serão considerados "Double Click".<br />
-  <textarea id="textarea"></textarea>
-  
-  
+	<div id="click" class="click"></div>
+	Cliques:  <input id="count" type="text" value="0" size="4"> <button id="reset">Reiniciar</button><br />
+	Contador de "Double Click":  <input id="dcCount" type="text" value="0" size="4"> <br />
+	<textarea id="textarea"></textarea>
+	<script>
+		var click = document.getElementById('click');
+		var textarea = document.getElementById('textarea');
+		var clicks = document.getElementById('count');
+		var dcCount = document.getElementById('dcCount');
+		var reset = document.getElementById('reset');
+		reset.onclick = function() {
+			clicks.value = 0;
+			dcCount.value = 0;
+			textarea.value = '';
+			click.style.background = 'green';
+		}
+
+		var prevClickMicrotime = microtime(true);
+		function microtime(get_as_float) {
+			var now = new Date().getTime() / 1000;
+			var s = parseInt(now, 10);
+			return (get_as_float) ? now : (Math.round((now - s) * 1000) / 1000) + ' ' + s;
+		}
+
+		var prevClickMicrotime = microtime(true);
+
+		function clickEvent() {
+			clickTime = microtime(true);
+			diff = clickTime - prevClickMicrotime;
+			if(diff <= 0.08) {
+				click.style.background = 'red';
+				dcCount.value++;
+			}
+			textarea.value = diff + "\n" + textarea.value;
+			prevClickMicrotime = clickTime;
+			clicks.value++;  
+		}
+
+		function mouseClick() {
+			var e = window.event;
+			console.log(e);
+			clickEvent();
+			return false;
+		}
+	</script>
 </body>
-<script src="script.js"></script>
 </html>
